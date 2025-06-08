@@ -1,0 +1,53 @@
+.round-container {
+  margin: 0.7em 0.35em;
+  display: inline-block;
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 70px;
+  background: linear-gradient(to bottom, #bbbbbb, #eeeeee);
+  box-shadow: inset 0 -0.7px 7px #999, 0 -0.7px 0.7px #aaa, 0 1.4px 0.7px #fff;
+}
+
+.round-content {
+  display: block;
+  cursor: pointer;
+  transition: transform 200ms ease-in;
+  background: linear-gradient(to bottom, #ffffff, #dddddd);
+  background-color: #fff;
+  box-shadow: 0 1.4px 4.9px #555;
+  text-shadow: 0 -0.7px 0.7px #111;
+  position: absolute;
+  text-align: center;
+  color: green;
+  font-size: 40px;
+  line-height: 112px;
+  margin: 14px;
+  width: 112px;
+  height: 112px;
+  border-radius: 56px;
+  user-select: none;
+}
+
+.round-content-active {
+  background-color: #eee;
+  color: #990000;
+  transform: rotate(-10deg) scale(0.9);
+}
+
+.round-content:hover {
+  color: #333;
+}
+
+.instagram-link {
+  cursor: pointer;
+  background: linear-gradient(45deg,
+    #405DE6,
+    #5851DB,
+    #833AB4,
+    #C13584,
+    #E1306C,
+    #FD1D1D);
+  background-clip: text;
+  color: transparent;
+}

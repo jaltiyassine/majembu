@@ -1,0 +1,41 @@
+.footer {
+    width: 100%;
+    padding: 6px 0;
+    background-color: #f7f7f7;
+    border-top: 1px solid #e0e0e0;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .message-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .lock-icon {
+    font-size: 20px;
+    position: relative;
+    bottom: 2px;
+    color: #333;
+  }
+  
+  .message {
+    font-size: 12px;
+    color: #3f3f3f;
+    margin: 0;
+  }
+  
+  .learn-more {
+    cursor: pointer;
+    color: #007bff;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  .learn-more:hover {
+    color: #0056b3;
+  }
+  

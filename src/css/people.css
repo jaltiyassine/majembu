@@ -1,0 +1,65 @@
+.people {
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.people h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.people-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 40px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.add-person-info-button {
+  position: fixed;
+  bottom: 45px;
+  right: 20px;
+  padding: 0;
+  width: 45px;
+  height: 45px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.add-person-info-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.add-person-info-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.empty-list-item {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  font-size: 0.9rem;
+
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
