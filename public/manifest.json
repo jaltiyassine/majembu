@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Majembu - AI Messaging Assistant",
   "description": "Majembu is made to help you communicate more effectively with the people around you :3",
-  "version": "1.6",
+  "version": "1.7",
   "permissions": ["storage", "tabs", "scripting", "alarms"],
   "content_scripts": [
     {

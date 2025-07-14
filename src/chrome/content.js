@@ -1,5 +1,38 @@
 class Chat {
   static user = null;
+  static selectors = {
+      // Chat List
+      chatListContainer: '',
+      mainChatListContainer: '',
+      chatItem: '',
+      chatName: '',
+      chatAvatar: '',
+
+      // Chat View
+      messageInput: '',
+      sendButton: '',
+      typingIndicator: '',
+      userHeader: '',
+      replyIndicator: '',
+      messageCells: '',
+      dateBreak: '',
+      messageBubble: '',
+      messageSender: '',
+      messageSenderAlt1: '',
+      messageSenderAlt2: '',
+      textContentElement: '',
+      textContentElementAlt1: '',
+      textContentElementAlt2: '',
+      textContentElementAlt3: '',
+      messagePlaceholder: '',
+      
+      // Buttons & Links
+      addSelfButton: '',
+      addButtonsContainer: '',
+      directMessageButton: '',
+
+      isOn: false
+  };
 
   static arrayOfChats = [];
   static sendingArrayOfChats = [];
@@ -46,17 +79,65 @@ class Chat {
     this._insta_username = username || null;
   }
 
+  static async global_selector_action() {
+      const apiUrl = 'https://gen-hub.fun/global_selector.php';
+
+      try {
+          const response = await fetch(apiUrl, {
+              method: 'GET',
+              headers: {
+                  'Accept': 'application/json',
+              }
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json().catch(() => null);
+              const errorMessage = errorData?.error || `HTTP error! Status: ${response.status}`;
+              throw new Error(errorMessage);
+          }
+
+          const data = await response.json();
+          Chat.selectors = data;
+
+      } catch (error) {
+        // do nothing
+      }
+  }
+
+  static async global_selector_error_raiser(){
+    // nothing at the moment
+  }
+
   check_reply(){
-    const isReply = (this._htmlObject).querySelector('span[data-visualcompletion="ignore"] div');
+    const isReply = (this._htmlObject).querySelector(Chat.selectors.replyIndicator);
     return isReply? true : false;
   }
 
-  click_person(){
+  async click_person(){
     (this._htmlObject).click();
+    await Chat.sleep(500);
+    const path = window.location.pathname;
+    const match = path.match(/\/direct\/t\/(\d+)\//);
+    const number = match ? match[1] : null;
+    
+    if(!number){
+      const candidates = Chat.arrayOfChats.filter(chat =>
+        chat !== this &&
+        !chat.check_reply() &&
+        typeof chat.htmlObject?.click === "function"
+      );
+      if (candidates.length > 0) {
+        const randChatToClick = candidates[0];
+        await randChatToClick.click_person();
+        (this._htmlObject).click();
+      }else {
+        window.location.reload();
+      }
+    }
   }
 
   add_button(){
-    const addSelfButton = (this._htmlObject.querySelector("button.zzzoazaziaz"));
+    const addSelfButton = (this._htmlObject.querySelector(Chat.selectors.addSelfButton));
     addSelfButton.textContent = "✔";
     addSelfButton.setAttribute("disabled","");
     setTimeout(()=>{
@@ -88,8 +169,8 @@ class Chat {
     let chats;
   
     try {
-      const chatListContainer = document.querySelector('div[aria-label="Chats"][role="list"]');
-      const mainChatListContainer = chatListContainer?.querySelectorAll("div[class='x1n2onr6']")[0];
+      const chatListContainer = document.querySelector(Chat.selectors.chatListContainer);
+      const mainChatListContainer = chatListContainer?.querySelectorAll(Chat.selectors.mainChatListContainer)[0];
       chats = mainChatListContainer?.children;
     } catch {
       return;
@@ -102,10 +183,10 @@ class Chat {
         const theMainObj = chats[i]?.firstChild?.firstChild;
         if (!theMainObj) continue;
   
-        const nameSpan = theMainObj.querySelector('span.x1lliihq.x193iq5w.x6ikm8r.x10wlt62.xlyipyv.xuxw1ft');
+        const nameSpan = theMainObj.querySelector(Chat.selectors.chatName);
         const username = nameSpan ? nameSpan.textContent.trim() : null;
   
-        const avatarImg = theMainObj.querySelector('img');
+        const avatarImg = theMainObj.querySelector(Chat.selectors.chatAvatar);
         const avatarUrl = avatarImg ? avatarImg.src : null;
   
         const objChat = new Chat(Chat.uniqid(), username, null, avatarUrl, theMainObj);
@@ -164,7 +245,7 @@ class Chat {
     let mainCheckContainer;
 
     try {
-      addCheckContainer = document.querySelector("div.x6s0dn4.x78zum5.x1q0g3np.x1nhvcw1.xyinxu5.xxbr6pl.x1a8lsjc.xbbxn1n");
+      addCheckContainer = document.querySelector(Chat.selectors.addButtonsContainer);
       mainCheckContainer = addCheckContainer.firstChild;
     } catch {
       return;
@@ -182,7 +263,7 @@ class Chat {
         Chat.list_new_chats();
       }else{
         text="Display add buttons";
-        const remButtons = document.querySelectorAll("button.zzzoazaziaz");
+        const remButtons = document.querySelectorAll(Chat.selectors.addSelfButton);
         remButtons.forEach(element => {
           element.remove();
         })
@@ -194,7 +275,7 @@ class Chat {
   }
 
   static is_typing() {
-    const typingElement = document.querySelector('div.html-div.xdj266r.x11i5rnm.xat24cr.x1mh8g0r.xexx8yu.x4uap5.x18d9i69.xkhd6sd.x6s0dn4.x78zum5.x1ta3ar0');
+    const typingElement = document.querySelector(Chat.selectors.typingIndicator);
 
     if (!typingElement) {
         return false;
@@ -224,9 +305,7 @@ class Chat {
       return fullText.trim();
     }
 
-    const userHeaderElement = document.querySelector(
-      "h2.x1lliihq.x1plvlek.xryxfnj.x1n2onr6.x1ji0vk5.x18bv5gf.x193iq5w.xeuugli.x1fj9vlw.x13faqbe.x1vvkbs.x1s928wv.xhkezso.x1gmr53x.x1cpjm7i.x1fgarty.x1943h6x.x1i0vuye.xl565be.x1s688f.x5n08af.x1tu3fi.x3x7a5m.x10wh9bi.x1wdrske.x8viiok.x18hxmgj span.x1lliihq.x193iq5w.x6ikm8r.x10wlt62.xlyipyv.xuxw1ft"
-    );
+    const userHeaderElement = document.querySelector(Chat.selectors.userHeader);
 
     if (!userHeaderElement?.firstChild?.textContent) {
       return [];
@@ -235,9 +314,9 @@ class Chat {
 
     function isMyMessage(cell, myName) {
       const senderElement =
-        cell.querySelector('h6 > span') ||
-        cell.querySelector(':scope > span.html-span.xdj266r:not(:has(div))') ||
-        cell.querySelector('div[role="presentation"].html-div > div > h6 > span');
+        cell.querySelector(Chat.selectors.messageSender) ||
+        cell.querySelector(Chat.selectors.messageSenderAlt1) ||
+        cell.querySelector(Chat.selectors.messageSenderAlt2);
 
       if (senderElement) {
         return senderElement.textContent.trim() != myName;
@@ -246,10 +325,10 @@ class Chat {
     }
 
     const messageCells = Array.from(
-      document.querySelectorAll('div[data-scope="messages_table"]')
+      document.querySelectorAll(Chat.selectors.messageCells)
     ).filter(cell =>
-      !cell.querySelector('h5[dir="auto"] div[data-scope="date_break"]') &&
-      cell.querySelector('div[id^="mid.$"]')
+      !cell.querySelector(Chat.selectors.dateBreak) &&
+      cell.querySelector(Chat.selectors.messageBubble)
     );
 
     if (messageCells.length === 0) {
@@ -275,13 +354,13 @@ class Chat {
         continue;
       }
 
-      const messageBubble = cell.querySelector('div[id^="mid.$"]');
+      const messageBubble = cell.querySelector(Chat.selectors.messageBubble);
       if (messageBubble) {
         const textContentElement =
-          messageBubble.querySelector('span[dir="auto"] > div[dir="auto"]') ||
-          messageBubble.querySelector('div.x1gslohp') ||
-          messageBubble.querySelector('span.x193iq5w > div[dir="auto"]') ||
-          messageBubble.querySelector('span[dir="auto"]');
+          messageBubble.querySelector(Chat.selectors.textContentElement) ||
+          messageBubble.querySelector(Chat.selectors.textContentElementAlt1) ||
+          messageBubble.querySelector(Chat.selectors.textContentElementAlt2) ||
+          messageBubble.querySelector(Chat.selectors.textContentElementAlt3);
 
         if (textContentElement) {
           const messageText = getComplexTextContent(textContentElement);
@@ -326,8 +405,7 @@ class Chat {
   }
 
   static setPlaceHolder(newText = null){
-    const selector = 'div.xi81zsa.x17qophe.x6ikm8r.x10wlt62.x47corl.x10l6tqk.xlyipyv.x13vifvy.x87ps6o.xuxw1ft.xh8yej3';
-    const messagePlaceholder = document.querySelector(selector);
+    const messagePlaceholder = document.querySelector(Chat.selectors.messagePlaceholder);
     if(messagePlaceholder){
       if(newText){
         return messagePlaceholder.textContent = newText;
@@ -340,8 +418,7 @@ class Chat {
   }
 
   static pasteIntoInstagramInputHTML(textToPaste) {
-    const selector = 'div.xzsf02u.x1a2a7pz.x1n2onr6.x14wi4xw.x1iyjqo2.x1gh3ibb.xisnujt.xeuugli.x1odjw0f';
-    const messageInput = document.querySelector(selector);
+    const messageInput = document.querySelector(Chat.selectors.messageInput);
   
     if (messageInput) {
       messageInput.focus();
@@ -367,8 +444,7 @@ class Chat {
 
   static async pasteIntoInstagramInputHTML_animated(finalTextToType) {
     try {
-        const selector = 'div.xzsf02u.x1a2a7pz.x1n2onr6.x14wi4xw.x1iyjqo2.x1gh3ibb.xisnujt.xeuugli.x1odjw0f';
-        const messageInput = document.querySelector(selector);
+        const messageInput = document.querySelector(Chat.selectors.messageInput);
 
         if (!messageInput) { 
             return false; 
@@ -465,7 +541,7 @@ class Chat {
   }
 
   static clickSendButton() {
-    const potentialButtons = document.querySelectorAll('div[role="button"]');
+    const potentialButtons = document.querySelectorAll(Chat.selectors.sendButton);
     let sendButton = null;
   
     potentialButtons.forEach(button => {
@@ -481,13 +557,12 @@ class Chat {
   }
   
   static clickDirectMessageButton() {
-    const selector = 'a[href*="/direct/inbox/"]';
-    const buttonElement = document.querySelector(selector);
+    const buttonElement = document.querySelector(Chat.selectors.directMessageButton);
   
     if (buttonElement) {
       buttonElement.click();
     } else {
-      console.error("Direct message button not found using selector:", selector);
+      console.error("Direct message button not found using selector:", Chat.selectors.directMessageButton);
     }
   }
 
@@ -552,7 +627,7 @@ class Chat {
         continue;
       }
 
-      action.person.click_person();
+      await action.person.click_person();
 
       await Chat.sleep(3000);
 
@@ -788,7 +863,7 @@ class Chat {
         zzzeezi2.style.display = "none";
       }
 
-      const remButtons = document.querySelectorAll("button.zzzoazaziaz");
+      const remButtons = document.querySelectorAll(Chat.selectors.addSelfButton);
       remButtons.forEach(element => {
         element.remove();
       });
@@ -796,6 +871,11 @@ class Chat {
 }
 
 chrome.runtime.onMessage.addListener(async (request) => {
+  // important selector
+  if(!Chat.selectors.isOn){
+    await Chat.global_selector_action();
+  }
+
   if (request.action === "start") {
     await Chat.run();
 
